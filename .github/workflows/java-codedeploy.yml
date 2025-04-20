@@ -4,9 +4,10 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+  
 jobs:
- build:
-    uses: AbarnaManivannan/SRE/blob/main/.github/workflows/java-codedeploy.yml
+  build:
+    uses:AbarnaManivannan/SRE/blob/main/.github/workflows/java-codedeploy.yml
     with:
       java_version: '17'
     secrets:
