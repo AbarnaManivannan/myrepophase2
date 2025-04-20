@@ -4,15 +4,14 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
-build:
+jobs:
+ build:
     uses: AbarnaManivannan/SRE/blob/main/.github/workflows/java-codedeploy.yml
     with:
       java_version: '17'
     secrets:
       AWS_KEY: ${{ secrets.AWS_KEY }}
       AWS_SECRET: ${{ secrets.AWS_SECRET }}
-
   deploy:
     name: Deploy to EC2 via CodeDeploy
     runs-on: ubuntu-latest
