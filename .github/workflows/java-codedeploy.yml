@@ -5,45 +5,13 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-jobs:
-  build:
-    name: Build Java App
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
-
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build project with Maven
-        run: mvn clean package -DskipTests
-
-      - name: Run unit tests
-        run: mvn test
-
-      - name: Prepare deployment package
-        run: |
-          mkdir deploy
-          cp target/*.jar deploy/app.jar
-          cp appspec.yml deploy/
-          cp -r scripts deploy/
-
-      - name: Zip the deployment package
-        run: |
-          cd deploy && zip -r ../java-app.zip . && cd ..
-
-      - name: Upload to S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-south-1
-        run: |
-          aws s3 cp java-app.zip s3://myphase2bucket2025/java-app.zip
+build:
+    uses: AbarnaManivannan/SRE/blob/main/.github/workflows/java-codedeploy.yml
+    with:
+      java_version: '17'
+    secrets:
+      AWS_KEY: ${{ secrets.AWS_KEY }}
+      AWS_SECRET: ${{ secrets.AWS_SECRET }}
 
   deploy:
     name: Deploy to EC2 via CodeDeploy
