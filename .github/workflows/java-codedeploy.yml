@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    uses: AbarnaManivannan/SRE/.github/workflows/java-codedeploy.yml@main  # Correct reusable workflow syntax
+    uses: AbarnaManivannan/SRE/.github/workflows/java-codedeploy.yml@main  # Reusable workflow
     with:
       java_version: '17'
     secrets:
@@ -20,6 +20,18 @@ jobs:
     needs: build
 
     steps:
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region $AWS_REGION
+
+          aws s3 cp java-app.zip s3://myphase2bucket2025/java-app.zip
+
       - name: Trigger CodeDeploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
